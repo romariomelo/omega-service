@@ -1,13 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'shared/base-entity';
+import { Entity, Column } from 'typeorm';
 
-@Entity()
-export class Submercado {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @Column()
+@Entity({ name: "DB_SUBMERCADO" })
+export class Submercado extends BaseEntity {
+  @Column({ name: "DS_DESCRICAO", type: 'text' })
   public descricao: string;
 
-  @Column()
+  @Column({ name: "VL_VALOR", type: 'numeric' })
   public valor: number;
 }

@@ -1,13 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'shared/base-entity';
+import { Column, Entity } from 'typeorm';
 
-@Entity()
-export class Carga {
-  @PrimaryGeneratedColumn()
-  public id: number;
-
-  @Column()
+@Entity({ name: "TB_CARGA" })
+export class Carga extends BaseEntity {
+  @Column({ name: "DS_NOME_EMPRESA", type: 'text' })
   public nome_empresa: string;
 
-  @Column()
+  @Column({ name: "DS_CONSUMO", type: 'numeric' })
   public consumo: number;
 }

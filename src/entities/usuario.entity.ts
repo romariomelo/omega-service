@@ -1,29 +1,23 @@
+import { BaseEntity } from 'shared/base-entity';
 import {
   Column,
   Entity,
   JoinColumn,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Proposta } from './proposta.entity';
 
-@Entity()
-export class Usuario {
-  @PrimaryGeneratedColumn()
-  private id: number;
-
+@Entity({ name: "DB_USUARIO" })
+export class Usuario extends BaseEntity {
   @Column({ type: 'uuid', unique: true })
   public public_id: string;
 
-  @Column()
+  @Column({ name: "DS_NOME", type: 'text' })
   public name: string;
 
-  @Column()
+  @Column({ name: "DS_EMAIL", type: 'text' })
   public email: string;
 
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
-  public created_at: Date;
-
-  @OneToMany(() => Proposta, (proposta) => proposta.usuario)
+  @OneToMany(() => Proposta, (proposta) => proposta.usuario,)
   public propostas: Proposta[];
 }
