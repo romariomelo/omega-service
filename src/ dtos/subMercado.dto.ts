@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class FonteEnergia {
+export class SubmercadoDto {
   @IsNotEmpty({
     groups: ['NORTE', 'NORDESTE', 'SUL', 'SULDESTE'],
     message: 'descrição é obrigatório',

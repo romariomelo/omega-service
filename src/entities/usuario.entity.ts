@@ -16,6 +16,6 @@ export class Usuario extends BaseEntity {
   @Column({ name: 'SENHA', type: 'varchar' })
   public senha: string;
 
-  @OneToMany(() => Proposta, (proposta) => proposta.usuario)
+  @OneToMany(() => Proposta, (proposta) => proposta.usuario, { eager: true })
   public propostas: Proposta[];
 }
