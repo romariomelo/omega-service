@@ -1,18 +1,8 @@
-import {
-  Body,
-  Controller,
-  ExecutionContext,
-  Get,
-  Param,
-  Post,
-  Put,
-  Headers,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateUserDto } from '../ dtos/create-user.dto';
-import { LoginUserDto } from '../ dtos/login-user.dto'
-import {Observable} from 'rxjs';
-import {Usuario} from '../entities/usuario.entity';
-
+import { LoginUserDto } from '../ dtos/login-user.dto';
+import { Observable } from 'rxjs';
+import { Usuario } from '../entities/usuario.entity';
 
 @Controller('user')
 export class UsersController {
@@ -28,7 +18,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: ): Observable<Usuario> {
+  findOne(@Param('id') id: 'uuid'): Observable<Usuario> {
     return this.service.findOne(id);
   }
 }

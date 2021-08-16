@@ -4,11 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  validate,
 } from 'class-validator';
-import { Usuario } from 'src/entities/usuario.entity';
-import { FonteEnergia } from './fonteEnergia.dto';
-import { SubmercadoDto } from './subMercado.dto';
 
 export class CreateProspostaDto {
   @IsDate()
