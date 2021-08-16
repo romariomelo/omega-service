@@ -1,5 +1,5 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
 import { Carga } from './carga.entity';
 import { FonteEnergia } from './fonteenergia.entity';
 import { Submercado } from './submercado.entity';
@@ -32,7 +32,7 @@ export class Proposta extends BaseEntity {
   @JoinColumn()
   public submercado: Submercado;
 
-  @OneToMany(() => Carga, (carga) => carga.proposta)
+  @ManyToMany(() => Carga, (carga) => carga.propostas)
   public cargas: Carga[];
 
   @Column({
@@ -53,6 +53,7 @@ export class Proposta extends BaseEntity {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
     eager: true,
+    cascade: ['insert', 'update'],
   })
   @JoinColumn()
   public usuario: Usuario;

@@ -1,16 +1,16 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany } from 'typeorm';
 import { Proposta } from './proposta.entity';
 
 @Entity({ name: 'TB_CARGA' })
 export class Carga extends BaseEntity {
-  @ManyToOne(() => Proposta, {
+  @ManyToMany(() => Proposta, (proposta) => proposta.cargas, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
     eager: true,
   })
   @JoinColumn()
-  public proposta: number;
+  public propostas: number;
 
   @Column({ name: 'DS_NOME_EMPRESA', type: 'varchar' })
   public nome_empresa: string;
