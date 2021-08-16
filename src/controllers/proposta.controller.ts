@@ -8,7 +8,6 @@ import {
   Request,
   Delete,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
 import { CreateProspostaDto } from 'src/ dtos/create-proposta.dto';
 import { UpdateProspostaDto } from 'src/ dtos/update-proposta.dto';
 import { Proposta } from 'src/entities/proposta.entity';
