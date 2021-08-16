@@ -12,11 +12,6 @@ export class UsersController {
     return this.usersService.add(user);
   }
 
-  @Post('/login')
-  login(@Body() logindto: LoginUserDto): Observable<void> {
-    return this.service.login(logindto);
-  }
-
   @Get(':id')
   findOne(@Param('id') id: 'uuid'): Observable<Usuario> {
     return this.service.findOne(id);

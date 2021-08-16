@@ -13,13 +13,13 @@ export class CreateProspostaDto {
   public data_fim: Date;
   @IsNotEmpty({
     groups: ['CONVECIONAL', 'RENOVAVEL'],
-    message: 'descrição é obrigatório',
+    message: 'descrição da fonte de energia é obrigatório',
   })
   @IsString()
   public fonte_energia: String;
   @IsNotEmpty({
     groups: ['NORTE', 'NORDESTE', 'SUL', 'SULDESTE'],
-    message: 'descrição é obrigatório',
+    message: 'descrição do submercado é obrigatório',
   })
   public submercado: String;
   @IsNumber()
