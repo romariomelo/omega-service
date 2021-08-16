@@ -32,7 +32,9 @@ export class Proposta extends BaseEntity {
   @JoinColumn()
   public submercado: Submercado;
 
-  @ManyToMany(() => Carga, (carga) => carga.propostas)
+  @ManyToMany(() => Carga, (carga) => carga.propostas, {
+    cascade: ['insert', 'update'],
+  })
   public cargas: Carga[];
 
   @Column({
