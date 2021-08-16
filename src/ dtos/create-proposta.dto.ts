@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  Min,
 } from 'class-validator';
 
 export class CreateProspostaDto {
@@ -22,6 +23,9 @@ export class CreateProspostaDto {
     message: 'descrição do submercado é obrigatório',
   })
   public submercado: String;
+  @IsNumber()
+  @Min(1)
+  public cargas: number;
   @IsNumber()
   public consumo_total: number;
   @IsBoolean()
