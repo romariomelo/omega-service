@@ -1,10 +1,11 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Carga } from './carga.entity';
 import { FonteEnergia } from './fonteenergia.entity';
 import { Submercado } from './submercado.entity';
 import { Usuario } from './usuario.entity';
 
-@Entity()
+@Entity({ name: 'TB_PROPOSTA' })
 export class Proposta extends BaseEntity {
   @Column({ type: 'uuid', unique: true })
   public public_id: string;
@@ -15,24 +16,40 @@ export class Proposta extends BaseEntity {
   @Column({ name: 'DT_FIM', type: 'timestamp' })
   public data_fim: Date;
 
-  @OneToOne(() => FonteEnergia)
+  @ManyToOne(() => FonteEnergia, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+    eager: true,
+  })
   @JoinColumn()
   public fonte_energia: FonteEnergia;
 
-  @OneToOne(() => Submercado)
+  @ManyToOne(() => Submercado, {
+    onDelete: 'RESTRICT',
+    onUpdate: 'RESTRICT',
+    eager: true,
+  })
   @JoinColumn()
   public submercado: Submercado;
 
-  @Column({ name: 'VL_CONSUMO_TOTAL', type: 'numeric' })
+  @OneToMany(() => Carga, (carga) => carga.proposta)
+  public cargas: Carga[];
+
+  @Column({
+    name: 'VL_CONSUMO_TOTAL',
+    type: 'numeric',
+    precision: 17,
+    scale: 4,
+  })
   public consumo_total: number;
 
   @Column({ name: 'BOOL_CONTRATADO', type: 'bool' })
   public contratado: boolean;
 
-  @Column({ name: 'VL_PROPOSTA', type: 'numeric' })
+  @Column({ name: 'VL_PROPOSTA', type: 'numeric', precision: 17, scale: 4 })
   public valor_proposta: number;
 
-  @ManyToOne(() => Usuario, (usuario) => usuario.propostas, {
+  @ManyToOne(() => Usuario, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
     eager: true,

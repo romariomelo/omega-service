@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export abstract class BaseEntity {
-  @PrimaryColumn({ name: 'ID', type: 'uuid' })
-  public id: string;
+  @PrimaryGeneratedColumn()
+  public id: number;
 
   @Column({
     default: () => 'CURRENT_TIMESTAMP',

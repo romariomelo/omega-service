@@ -1,20 +1,20 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, OneToMany } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Proposta } from './proposta.entity';
 
-@Entity()
+@Entity({ name: 'TB_USUARIO' })
 export class Usuario extends BaseEntity {
   @Column({ type: 'uuid', unique: true })
   public public_id: string;
 
-  @Column({ type: 'text' })
+  @Column({ name: 'DS_NOME', type: 'varchar' })
   public name: string;
 
-  @Column({ type: 'text' })
+  @Column({ name: 'DS_EMAIL', type: 'varchar' })
   public email: string;
 
-  @Column()
-  private password: string;
+  @Column({ name: 'SENHA', type: 'varchar' })
+  public senha: string;
 
   @OneToMany(() => Proposta, (proposta) => proposta.usuario, { eager: true })
   public propostas: Proposta[];
