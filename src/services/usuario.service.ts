@@ -3,10 +3,15 @@ import { CreateUserDto } from 'src/ dtos/create-user.dto';
 import { UpdateUserDto } from 'src/ dtos/update-user.dto';
 import { Usuario } from 'src/entities/usuario.entity';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Guid } from 'guid-typescript';
 
 @Injectable()
 export class UsuarioService {
-  constructor(private userRepository: Repository<Usuario>) {}
+  constructor(
+    @InjectRepository(Usuario)
+    private userRepository: Repository<Usuario>,
+  ) {}
 
   async findAll(): Promise<Usuario[]> {
     return this.userRepository.find();
@@ -21,11 +26,15 @@ export class UsuarioService {
   }
 
   async findByPublicId(public_id: string): Promise<Usuario> {
-    return this.userRepository.findOne({ public_id });
+    return this.userRepository.findOne(public_id);
   }
 
   async add(createUserDto: CreateUserDto): Promise<Usuario> {
     const usuario = new Usuario();
+    usuario.public_id = Guid.create().toString();
+    usuario.name = createUserDto.name;
+    usuario.email = createUserDto.email;
+    usuario.senha = createUserDto.password;
     return this.userRepository.save(usuario);
   }
 

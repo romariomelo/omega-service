@@ -2,10 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Proposta } from 'src/entities/proposta.entity';
 import { UpdateProspostaDto } from 'src/ dtos/update-proposta.dto';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class PropostaService {
-  constructor(private propostaRepository: Repository<Proposta>) {}
+  constructor(
+    @InjectRepository(Proposta)
+    private propostaRepository: Repository<Proposta>,
+  ) {}
 
   // async findAll(usuarioId: number): Promise<Proposta[]> {
   //   return this.propostaRepository.find({ usuarioId });

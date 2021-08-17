@@ -17,18 +17,10 @@ export class UsersController {
     const usuarios = this.usuarioService.findAll();
     return usuarios;
   }
-  @Get(':email')
-  async findByEmail(@Param('email') email: 'email'): Promise<Usuario> {
-    return this.usuarioService.findByEmail(email);
-  }
 
-  @Get(':id')
-  async findOne(@Param('id') id: 'uuid'): Promise<Usuario> {
-    return this.usuarioService.findOne(id);
-  }
-
-  @Get(':id')
-  async findByPublicId(@Param('id') id: 'uuid'): Promise<Usuario> {
-    return this.usuarioService.findByPublicId(id);
+  @Get(':public_id')
+  async findByPublicId(@Param() public_id) {
+    const usuario = await this.usuarioService.findByPublicId(public_id);
+    return usuario;
   }
 }
