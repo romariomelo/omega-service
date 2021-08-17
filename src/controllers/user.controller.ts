@@ -1,19 +1,27 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateUserDto } from '../ dtos/create-user.dto';
-import { LoginUserDto } from '../ dtos/login-user.dto';
-import { Observable } from 'rxjs';
 import { Usuario } from '../entities/usuario.entity';
+import { UsuarioService } from 'src/services/usuario.service';
+import { CreateUserDto } from 'src/dtos/create-user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UsersController {
+  constructor(private readonly usuarioService: UsuarioService) {}
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Observable<Usuario> {
-    const user = this.usersService.create(createUserDto);
-    return this.usersService.add(user);
+  async create(@Body() createUserDto: CreateUserDto): Promise<Usuario> {
+    const user = await this.usuarioService.add(createUserDto);
+    return user;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: 'uuid'): Observable<Usuario> {
-    return this.service.findOne(id);
+  @Get()
+  async find(): Promise<Usuario[]> {
+    const usuarios = this.usuarioService.findAll();
+    return usuarios;
+  }
+
+  @Get(':public_id')
+  async findByPublicId(@Param() params) {
+    const { public_id } = params;
+    const usuario = await this.usuarioService.findByPublicId(public_id);
+    return usuario;
   }
 }

@@ -63,7 +63,6 @@ export class Proposta extends BaseEntity {
   @ManyToOne(() => Usuario, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
-    eager: true,
     cascade: ['insert', 'update'],
   })
   @JoinColumn()
