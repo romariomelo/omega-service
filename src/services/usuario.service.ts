@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from 'src/ dtos/create-user.dto';
-import { UpdateUserDto } from 'src/ dtos/update-user.dto';
 import { Usuario } from 'src/entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guid } from 'guid-typescript';
+import { CreateUserDto } from 'src/dtos/create-user.dto';
 
 @Injectable()
 export class UsuarioService {
@@ -26,7 +25,7 @@ export class UsuarioService {
   }
 
   async findByPublicId(public_id: string): Promise<Usuario> {
-    return this.userRepository.findOne(public_id);
+    return this.userRepository.findOne({ public_id });
   }
 
   async add(createUserDto: CreateUserDto): Promise<Usuario> {

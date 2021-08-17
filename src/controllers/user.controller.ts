@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { CreateUserDto } from '../ dtos/create-user.dto';
 import { Usuario } from '../entities/usuario.entity';
 import { UsuarioService } from 'src/services/usuario.service';
+import { CreateUserDto } from 'src/dtos/create-user.dto';
 
-@Controller('user')
+@Controller('users')
 export class UsersController {
   constructor(private readonly usuarioService: UsuarioService) {}
   @Post()
@@ -19,7 +19,8 @@ export class UsersController {
   }
 
   @Get(':public_id')
-  async findByPublicId(@Param() public_id) {
+  async findByPublicId(@Param() params) {
+    const { public_id } = params;
     const usuario = await this.usuarioService.findByPublicId(public_id);
     return usuario;
   }

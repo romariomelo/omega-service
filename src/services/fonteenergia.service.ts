@@ -14,4 +14,8 @@ export class FonteEnergiaService {
   findAll(): Promise<FonteEnergia[]> {
     return this.fonteEnergiaRepository.find();
   }
+
+  findByDescricao(descricao: string): Promise<FonteEnergia> {
+    return this.fonteEnergiaRepository.findOne({ where: { descricao } });
+  }
 }
