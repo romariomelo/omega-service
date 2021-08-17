@@ -4,11 +4,7 @@ import { Proposta } from './proposta.entity';
 
 @Entity({ name: 'TB_CARGA' })
 export class Carga extends BaseEntity {
-  @ManyToMany(() => Proposta, (proposta) => proposta.cargas, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-    eager: true,
-  })
+  @ManyToMany(() => Proposta)
   @JoinColumn()
   public propostas: number;
 

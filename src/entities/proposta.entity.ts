@@ -1,5 +1,12 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 import { Carga } from './carga.entity';
 import { FonteEnergia } from './fonteenergia.entity';
 import { Submercado } from './submercado.entity';
@@ -32,7 +39,12 @@ export class Proposta extends BaseEntity {
   @JoinColumn()
   public submercado: Submercado;
 
-  @ManyToMany(() => Carga, (carga) => carga.propostas)
+  @ManyToMany(() => Carga, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    eager: true,
+  })
+  @JoinTable()
   public cargas: Carga[];
 
   @Column({
@@ -52,7 +64,6 @@ export class Proposta extends BaseEntity {
   @ManyToOne(() => Usuario, {
     onDelete: 'RESTRICT',
     onUpdate: 'RESTRICT',
-    eager: true,
     cascade: ['insert', 'update'],
   })
   @JoinColumn()

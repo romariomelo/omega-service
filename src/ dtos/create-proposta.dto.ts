@@ -24,7 +24,6 @@ export class CreateProspostaDto {
   })
   public submercado: String;
   @IsNumber()
-  @Min(1)
   public cargas: number;
   @IsNumber()
   public consumo_total: number;
