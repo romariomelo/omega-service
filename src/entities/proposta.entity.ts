@@ -1,5 +1,12 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+} from 'typeorm';
 import { Carga } from './carga.entity';
 import { FonteEnergia } from './fonteenergia.entity';
 import { Submercado } from './submercado.entity';
@@ -34,7 +41,9 @@ export class Proposta extends BaseEntity {
 
   @ManyToMany(() => Carga, (carga) => carga.propostas, {
     cascade: ['insert', 'update'],
+    eager: true,
   })
+  @JoinTable()
   public cargas: Carga[];
 
   @Column({
