@@ -8,6 +8,7 @@ import { Proposta } from 'src/entities/proposta.entity';
 import { CreatePropostaDto } from 'src/dtos/create-proposta.dto';
 import { FonteEnergiaService } from './fonteenergia.service';
 import { SubmercadoService } from './submercado.service';
+import { CargaService } from './carga.service';
 
 @Injectable()
 export class PropostaService {
@@ -17,36 +18,40 @@ export class PropostaService {
     private usuarioService: UsuarioService,
     private fonteEnergiaService: FonteEnergiaService,
     private submercadoService: SubmercadoService,
+    private cargaService: CargaService,
   ) {}
 
   async findAll(usuarioId: string): Promise<Proposta[]> {
-    const usuario = await this.usuarioService.findByPublicId(usuarioId);
+    const usuario = await this.usuarioService.findOne(usuarioId);
     return this.propostaRepository.find({ where: { usuario } });
   }
 
-  async create(createPropotaDto: CreatePropostaDto) {
+  async create(createPropostaDto: CreatePropostaDto, id_usuario: string) {
     console.log('PropostaService.create');
     const proposta = new Proposta();
     proposta.public_id = Guid.create().toString();
 
-    proposta.data_inicio = createPropotaDto.data_inicio;
-    proposta.data_fim = createPropotaDto.data_fim;
-    proposta.consumo_total = createPropotaDto.consumo_total;
-    proposta.contratado = false;
+    proposta.data_inicio = createPropostaDto.data_inicio;
+    proposta.data_fim = createPropostaDto.data_fim;
+    proposta.consumo_total = createPropostaDto.consumo_total;
+    proposta.contratado = createPropostaDto.contratado;
     proposta.valor_proposta = 6;
-    proposta.usuario = await this.usuarioService.findOne(1);
+    proposta.usuario = await this.usuarioService.findOne(id_usuario);
 
     proposta.fonte_energia = await this.fonteEnergiaService.findByDescricao(
-      createPropotaDto.fonte_energia,
+      createPropostaDto.fonte_energia,
     );
 
     proposta.submercado = await this.submercadoService.findByDescricao(
-      createPropotaDto.submercado,
+      createPropostaDto.submercado,
     );
 
-    console.log(proposta);
+    Promise.all(
+      createPropostaDto.cargas.map((carga) => {
+        return this.cargaService.findByNomeEmpresa(carga.nome_empresa);
+      }),
+    ).then((cargas) => (proposta.cargas = cargas));
 
-    // if (proposta.validadeData());
     return this.propostaRepository.save(proposta);
   }
 

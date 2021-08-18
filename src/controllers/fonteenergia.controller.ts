@@ -1,10 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
-import { FonteEnergiaService } from 'src/services/fonteenergia.service';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { FonteEnergia } from '../entities/fonteenergia.entity';
+import { FonteEnergiaService } from 'src/services/fonteenergia.service';
 
 @Controller('fonteEnergia')
 export class FonteEnergiaController {
-  constructor(private fonteEnergiaService: FonteEnergiaService) {}
+  constructor(private readonly fonteEnergiaService: FonteEnergiaService) {}
 
   @Get()
   async findAll(): Promise<FonteEnergia[]> {

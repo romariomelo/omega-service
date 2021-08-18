@@ -1,12 +1,14 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsDate,
+  IsIn,
   IsNotEmpty,
   IsNumber,
   IsString,
-  Min,
 } from 'class-validator';
+import { Carga } from 'src/entities/carga.entity';
 
 export class CreatePropostaDto {
   @IsDate()
@@ -16,27 +18,26 @@ export class CreatePropostaDto {
   @IsDate()
   @Type(() => Date)
   public data_fim: Date;
-
-  @IsNotEmpty({
-    groups: ['CONVENCIONAL', 'RENOVAVEL'],
-    message: 'descrição da fonte de energia é obrigatório',
+  @IsNotEmpty({ message: 'descrição da fonte de energia é obrigatório' })
+  @IsIn(['CONVENCIONAL', 'RENOVAVEL'], {
+    message: 'Campo fonte_energia deve ser CONVENCIONAL ou RENOVAVEL',
   })
   @IsString()
   public fonte_energia: string;
 
-  @IsNotEmpty({
-    groups: ['NORTE', 'NORDESTE', 'SUL', 'SULDESTE'],
-    message: 'descrição do submercado é obrigatório',
+  @IsIn(['NORTE', 'NORDESTE', 'SUL', 'SULDESTE'], {
+    message: 'Campo submercado deve ser NORTE, NORDESTE, SUL ou SULDESTE',
   })
+  @IsNotEmpty({ message: 'descrição do submercado é obrigatório' })
   public submercado: string;
 
-  @IsNumber()
-  @Min(1)
-  public cargas: number;
+  @IsNotEmpty({ message: 'As cargas são obrigatórias' })
+  @IsArray({ message: 'Deve ser uma lista com as cargas' })
+  public cargas: Carga[];
 
-  @IsNumber()
+  @IsNumber({}, { message: 'Campo consumo_total deve ser um valor numérico' })
   public consumo_total: number;
 
-  @IsBoolean()
+  @IsBoolean({ message: 'Campo contratado deve ser um valor boolean' })
   public contratado: boolean;
 }

@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { CreateUserDto } from '../dtos/create-user.dto';
 import { Usuario } from '../entities/usuario.entity';
 import { UsuarioService } from 'src/services/usuario.service';
-import { CreateUserDto } from 'src/dtos/create-user.dto';
 
-@Controller('users')
+@Controller('user')
 export class UsersController {
   constructor(private readonly usuarioService: UsuarioService) {}
   @Post()
@@ -17,11 +17,18 @@ export class UsersController {
     const usuarios = this.usuarioService.findAll();
     return usuarios;
   }
+  @Get(':email')
+  async findByEmail(@Param('email') email: 'email'): Promise<Usuario> {
+    return this.usuarioService.findByEmail(email);
+  }
 
-  @Get(':public_id')
-  async findByPublicId(@Param() params) {
-    const { public_id } = params;
-    const usuario = await this.usuarioService.findByPublicId(public_id);
-    return usuario;
+  @Get(':id')
+  async findOne(@Param('id') id: 'uuid'): Promise<Usuario> {
+    return this.usuarioService.findOne(id);
+  }
+
+  @Get(':id')
+  async findByPublicId(@Param('id') id: 'uuid'): Promise<Usuario> {
+    return this.usuarioService.findByPublicId(id);
   }
 }

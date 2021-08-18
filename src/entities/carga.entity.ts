@@ -4,7 +4,9 @@ import { Proposta } from './proposta.entity';
 
 @Entity({ name: 'TB_CARGA' })
 export class Carga extends BaseEntity {
-  @ManyToMany(() => Proposta, (proposta) => proposta.cargas)
+  @ManyToMany(() => Proposta, (proposta) => proposta.cargas, {
+    cascade: ['insert', 'update'],
+  })
   public propostas: number;
 
   @Column({ name: 'DS_NOME_EMPRESA', type: 'varchar' })

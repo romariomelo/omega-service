@@ -7,4 +7,8 @@ export class SubmercadoDto {
   })
   @IsString()
   public descricao: String;
+
+  @IsNotEmpty({ message: 'valor é obrigatório' })
+  @IsNumber()
+  public valor: number;
 }
