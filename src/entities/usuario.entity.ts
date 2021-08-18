@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { BaseEntity } from 'shared/base-entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Proposta } from './proposta.entity';
@@ -13,9 +14,10 @@ export class Usuario extends BaseEntity {
   @Column({ name: 'DS_EMAIL', type: 'varchar' })
   public email: string;
 
+  @Exclude()
   @Column({ name: 'SENHA', type: 'varchar' })
   public senha: string;
 
-  @OneToMany(() => Proposta, (proposta) => proposta.usuario, { eager: true })
+  @OneToMany(() => Proposta, (proposta) => proposta.usuario)
   public propostas: Proposta[];
 }

@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { Usuario } from '../entities/usuario.entity';
 import { UsuarioService } from 'src/services/usuario.service';
 import { CreateUserDto } from 'src/dtos/create-user.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
   constructor(private readonly usuarioService: UsuarioService) {}

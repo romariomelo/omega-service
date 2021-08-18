@@ -7,17 +7,19 @@ import {
   Post,
   Req,
   Delete,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { PropostaService } from 'src/services/proposta.service';
 import { Request } from 'express';
 import { CreatePropostaDto } from 'src/dtos/create-proposta.dto';
 
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('proposta')
 export class PropostaController {
   constructor(private propostasService: PropostaService) {}
   @Get()
   async findAll(@Body() body) {
-    console.log(body);
     const { usuarioId } = body;
     const propostas = await this.propostasService.findAll(usuarioId);
     return propostas;
@@ -27,9 +29,7 @@ export class PropostaController {
     @Body() createPropostaDto: CreatePropostaDto,
     @Req() request: Request,
   ) {
-    console.log('PropostaController.create');
     const create = await this.propostasService.create(createPropostaDto);
-    console.log(create);
     return create;
     // const user = request.user;
     // const proposta = this.propostasService.create(createProspostaDto, user.id);

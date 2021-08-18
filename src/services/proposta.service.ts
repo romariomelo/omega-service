@@ -25,7 +25,6 @@ export class PropostaService {
   }
 
   async create(createPropotaDto: CreatePropostaDto) {
-    console.log('PropostaService.create');
     const proposta = new Proposta();
     proposta.public_id = Guid.create().toString();
 
@@ -43,8 +42,6 @@ export class PropostaService {
     proposta.submercado = await this.submercadoService.findByDescricao(
       createPropotaDto.submercado,
     );
-
-    console.log(proposta);
 
     // if (proposta.validadeData());
     return this.propostaRepository.save(proposta);
