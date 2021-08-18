@@ -1,9 +1,26 @@
+<<<<<<< HEAD
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/create-user.dto';
+=======
+import {
+  Body,
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
+>>>>>>> 5260cdf05ffeca40669759b7277b5ac01cfa08b7
 import { Usuario } from '../entities/usuario.entity';
 import { UsuarioService } from 'src/services/usuario.service';
 
+<<<<<<< HEAD
 @Controller('user')
+=======
+@UseInterceptors(ClassSerializerInterceptor)
+@Controller('users')
+>>>>>>> 5260cdf05ffeca40669759b7277b5ac01cfa08b7
 export class UsersController {
   constructor(private readonly usuarioService: UsuarioService) {}
   @Post()

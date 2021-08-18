@@ -27,7 +27,6 @@ export class PropostaService {
   }
 
   async create(createPropostaDto: CreatePropostaDto, id_usuario: string) {
-    console.log('PropostaService.create');
     const proposta = new Proposta();
     proposta.public_id = Guid.create().toString();
 
