@@ -11,14 +11,14 @@ export class CargaService {
     private cargaRepository: Repository<Carga>,
   ) {}
 
-  async add(createCargaDto: CreateCargaDto): Promise<Carga> {
+  add(createCargaDto: CreateCargaDto): Promise<Carga> {
     const carga = new Carga();
     carga.nome_empresa = createCargaDto.nome_empresa;
     carga.consumo = createCargaDto.consumo;
     return this.cargaRepository.save(carga);
   }
 
-  async findAll(): Promise<Carga[]> {
+  findAll(): Promise<Carga[]> {
     return this.cargaRepository.find();
   }
 

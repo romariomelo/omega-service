@@ -18,6 +18,7 @@ export class CreatePropostaDto {
   @IsDate()
   @Type(() => Date)
   public data_fim: Date;
+
   @IsNotEmpty({ message: 'descrição da fonte de energia é obrigatório' })
   @IsIn(['CONVENCIONAL', 'RENOVAVEL'], {
     message: 'Campo fonte_energia deve ser CONVENCIONAL ou RENOVAVEL',

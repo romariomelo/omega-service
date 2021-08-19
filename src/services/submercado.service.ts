@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SubmercadoDto } from 'src/dtos/create-subMercado.dto';
 
 import { Submercado } from 'src/entities/submercado.entity';
 import { Repository } from 'typeorm';
@@ -11,6 +12,12 @@ export class SubmercadoService {
     private submercadoRepository: Repository<Submercado>,
   ) {}
 
+  add(createSubmercadoDto: SubmercadoDto): Promise<Submercado> {
+    const submercado = new Submercado();
+    submercado.descricao = createSubmercadoDto.descricao;
+    submercado.valor = createSubmercadoDto.valor;
+    return this.submercadoRepository.save(submercado);
+  }
   findAll(): Promise<Submercado[]> {
     return this.submercadoRepository.find();
   }

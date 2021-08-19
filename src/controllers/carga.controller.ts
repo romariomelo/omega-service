@@ -9,13 +9,13 @@ export class CargaController {
 
   @Get()
   async findAll(): Promise<Carga[]> {
-    const propostas = await this.cargaService.findAll();
-    return propostas;
+    const cargas = await this.cargaService.findAll();
+    return cargas;
   }
 
   @Post()
   async create(@Body() createCargaDto: CreateCargaDto): Promise<Carga> {
-    const user = await this.cargaService.add(createCargaDto);
-    return user;
+    const carga = await this.cargaService.add(createCargaDto);
+    return carga;
   }
 }
