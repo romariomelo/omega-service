@@ -1,34 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Usuario } from 'src/entities/usuario.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guid } from 'guid-typescript';
 import { CreateUserDto } from 'src/dtos/create-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UpdateUserDto } from 'src/dtos/update-user.dto';
 
 @Injectable()
 export class UsuarioService {
   constructor(
     @InjectRepository(Usuario)
     private userRepository: Repository<Usuario>,
+    private jwtService: JwtService,
   ) {}
 
-  async findAll(): Promise<Usuario[]> {
+  findAll(): Promise<Usuario[]> {
     return this.userRepository.find();
   }
 
-  async findOne(id): Promise<Usuario> {
+  findOne(id): Promise<Usuario> {
     return this.userRepository.findOne({ id });
   }
 
-  async findByEmail(email: string): Promise<Usuario> {
+  findByEmail(email: string): Promise<Usuario> {
     return this.userRepository.findOne({ email });
   }
 
-  async findByPublicId(public_id: string): Promise<Usuario> {
-    return this.userRepository.findOne({ public_id });
+  findByPublicId(public_id: string, options = {}): Promise<Usuario> {
+    return this.userRepository.findOne({ public_id }, options);
   }
 
-  async add(createUserDto: CreateUserDto): Promise<Usuario> {
+  add(createUserDto: CreateUserDto): Promise<Usuario> {
     const usuario = new Usuario();
     usuario.public_id = Guid.create().toString();
     usuario.name = createUserDto.name;
@@ -37,12 +40,27 @@ export class UsuarioService {
     return this.userRepository.save(usuario);
   }
 
-  // async update(id: number, updateUserDto: UpdateUserDto) {
-  //   return this.userRepository.update(id, updateUserDto);
-  // }
+  async update(usuario: Usuario, updateUserDto: UpdateUserDto) {
+    return this.userRepository.update(usuario.id, updateUserDto);
+  }
 
   async remove(id: number): Promise<Usuario> {
     const usuario = await this.findOne(id);
     return this.userRepository.remove(usuario);
+  }
+
+  getUsuarioLogado(authorization): Promise<Usuario> {
+    if (!authorization) throw new UnauthorizedException('Token inválido');
+
+    const token = authorization.split(' ')[1];
+
+    if (!token) throw new UnauthorizedException('Token inválido');
+
+    const payload = this.jwtService.decode(token, { json: true });
+
+    if (!payload) throw new UnauthorizedException('Token inválido');
+
+    const id = String(payload.sub);
+    return this.findOne(id);
   }
 }
