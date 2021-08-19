@@ -49,14 +49,8 @@ export class UsuarioService {
     return this.userRepository.remove(usuario);
   }
 
-  getUsuarioLogado(authorization): Promise<Usuario> {
-    if (!authorization) throw new UnauthorizedException('Token inválido');
-
-    const token = authorization.split(' ')[1];
-
-    if (!token) throw new UnauthorizedException('Token inválido');
-
-    const payload = this.jwtService.decode(token, { json: true });
+  getUsuarioLogado(access_token: string): Promise<Usuario> {
+    const payload = this.jwtService.decode(access_token, { json: true });
 
     if (!payload) throw new UnauthorizedException('Token inválido');
 

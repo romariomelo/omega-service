@@ -68,6 +68,13 @@ export class UsersController {
     return this.usuarioService.findByPublicId(public_id, options);
   }
 
+  @Get(':access_token/verify')
+  async verifyToken(@Param() param) {
+    const { access_token } = param;
+
+    return this.usuarioService.getUsuarioLogado(access_token);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Put()
   async update(
@@ -77,7 +84,10 @@ export class UsersController {
   ) {
     try {
       const { authorization } = header;
-      const usuario = await this.usuarioService.getUsuarioLogado(authorization);
+
+      const access_token = authorization.split(' ')[1];
+
+      const usuario = await this.usuarioService.getUsuarioLogado(access_token);
       this.usuarioService.update(usuario, updateUserDto);
       res.status(200).json({ message: 'Registro atualizado' });
     } catch (error) {
