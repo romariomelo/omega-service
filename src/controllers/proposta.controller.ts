@@ -3,11 +3,16 @@ import {
   Controller,
   Get,
   Post,
-  Req,
+  UseGuards,
+  Request,
+  Response,
   UseInterceptors,
   ClassSerializerInterceptor,
-  UseGuards,
-  Res,
+  Delete,
+  Headers,
+  Param,
+  UnauthorizedException,
+  Patch,
 } from '@nestjs/common';
 import { PropostaService } from 'src/services/proposta.service';
 import { CreatePropostaDto } from 'src/dtos/create-proposta.dto';
@@ -25,8 +30,9 @@ export class PropostaController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Req() request) {
-    const token = request.headers.authorization.split(' ')[1];
+  async findAll(@Headers() headers) {
+    const { authorization } = headers;
+    const token = authorization.split(' ')[1];
     const payload = this.jwtService.decode(token, { json: true });
     const id = String(payload.sub);
     const propostas = await this.propostasService.findAll(id);
@@ -37,8 +43,8 @@ export class PropostaController {
   @Post()
   async create(
     @Body() createPropostaDto: CreatePropostaDto,
-    @Req() request,
-    @Res() response,
+    @Request() request,
+    @Response() response,
   ): Promise<Proposta> {
     const token = request.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token, { json: true });
@@ -51,7 +57,55 @@ export class PropostaController {
         .status(400)
         .json({ message: 'Data final deve ser maior que a inicial' });
     }
-    const proposta = await this.propostasService.create(createPropostaDto, id);
+    const proposta = await this.propostasService.create(
+      createPropostaDto,
+      id,
+      timeDiff,
+    );
     return response.status(201).send(proposta);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':public_id')
+  async remove(@Param() params, @Headers() headers, @Response() response) {
+    const { authorization } = headers;
+    const { public_id } = params;
+    const token = authorization.split(' ')[1];
+    const payload = this.jwtService.decode(token, { json: true });
+    const id_usuario = payload.sub;
+    const proposta = await this.propostasService.findByPublicId(public_id);
+    if (!proposta) {
+      response.status(400).json({
+        message: 'Não foi encontrada nenhuma posposta com essa referência',
+      });
+    } else if (proposta.usuario.id !== id_usuario) {
+      throw new UnauthorizedException();
+    } else if (proposta.contratado) {
+      response
+        .status(400)
+        .json({ message: 'Posposta contratada não pode ser excluida' });
+    }
+    return this.propostasService.remove(proposta);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch(':public_id')
+  async update(@Param() params, @Headers() headers, @Response() response) {
+    const { authorization } = headers;
+    const { public_id } = params;
+    const token = authorization.split(' ')[1];
+    const payload = this.jwtService.decode(token, { json: true });
+    const id_usuario = payload.sub;
+    const proposta = await this.propostasService.findByPublicId(public_id);
+    if (!proposta) {
+      response.status(400).json({
+        message: 'Não foi encontrada nenhuma posposta com essa referência',
+      });
+    } else if (proposta.usuario.id !== id_usuario) {
+      throw new UnauthorizedException();
+    } else if (proposta.contratado) {
+      response.status(400).json({ message: 'Posposta já contratada' });
+    }
+    return this.propostasService.update(proposta, { contratado: true });
   }
 }

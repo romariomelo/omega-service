@@ -9,6 +9,7 @@ import { CreatePropostaDto } from 'src/dtos/create-proposta.dto';
 import { FonteEnergiaService } from './fonteenergia.service';
 import { SubmercadoService } from './submercado.service';
 import { CargaService } from './carga.service';
+import { UpdateProspostaDto } from 'src/dtos/update-proposta.dto';
 
 @Injectable()
 export class PropostaService {
@@ -26,7 +27,15 @@ export class PropostaService {
     return this.propostaRepository.find({ where: { usuario } });
   }
 
-  async create(createPropostaDto: CreatePropostaDto, id_usuario: string) {
+  async findByPublicId(public_id: string): Promise<Proposta> {
+    return this.propostaRepository.findOne({ where: { public_id } });
+  }
+
+  async create(
+    createPropostaDto: CreatePropostaDto,
+    id_usuario: string,
+    timediff: number,
+  ) {
     const proposta = new Proposta();
     proposta.public_id = Guid.create().toString();
 
@@ -34,7 +43,6 @@ export class PropostaService {
     proposta.data_fim = createPropostaDto.data_fim;
     proposta.consumo_total = createPropostaDto.consumo_total;
     proposta.contratado = createPropostaDto.contratado;
-    proposta.valor_proposta = 6;
     proposta.usuario = await this.usuarioService.findOne(id_usuario);
 
     proposta.fonte_energia = await this.fonteEnergiaService.findByDescricao(
@@ -51,18 +59,26 @@ export class PropostaService {
       }),
     ).then((cargas) => (proposta.cargas = cargas));
 
+    const periodo_horas = Math.ceil(timediff / (1000 * 60 * 60));
+    const valor_kW_por_hora = 10000;
+
+    proposta.valor_proposta = proposta.cargas.reduce((acc, carga) => {
+      const { submercado, fonte_energia } = proposta;
+      const consumo_carga_currente: number =
+        carga.consumo *
+        periodo_horas *
+        (valor_kW_por_hora + submercado.valor + fonte_energia.valor);
+      return acc + consumo_carga_currente;
+    }, 0);
+
     return this.propostaRepository.save(proposta);
   }
 
-  // async add(proposta: Proposta) {
-  //   return this.propostaRepository.save(proposta);
-  // }
+  async remove(proposta: Proposta) {
+    return this.propostaRepository.remove(proposta);
+  }
 
-  // async remove(propostaId) {
-  //   return this.propostaRepository.remove(propostaId);
-  // }
-
-  // async upadate(public_id: string, updatePropostaDto: UpdateProspostaDto) {
-  //   return this.propostaRepository.update({ public_id }, updatePropostaDto);
-  // }
+  async update(proposta: Proposta, updatePropostaDto: UpdateProspostaDto) {
+    return this.propostaRepository.update(proposta.id, updatePropostaDto);
+  }
 }
