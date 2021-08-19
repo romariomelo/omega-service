@@ -11,7 +11,7 @@ export class Usuario extends BaseEntity {
   @Column({ name: 'DS_NOME', type: 'varchar' })
   public name: string;
 
-  @Column({ name: 'DS_EMAIL', type: 'varchar' })
+  @Column({ name: 'DS_EMAIL', type: 'varchar', unique: true })
   public email: string;
 
   @Exclude()
