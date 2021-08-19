@@ -21,13 +21,17 @@ import { CreateUserDto } from 'src/dtos/create-user.dto';
 import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { UpdateUserDto } from 'src/dtos/update-user.dto';
 import { Response } from 'express';
+import { AuthService } from 'src/auth/shared/auth.service';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usuarioService: UsuarioService) {}
+  constructor(
+    private readonly usuarioService: UsuarioService,
+    private authService: AuthService,
+  ) {}
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<Usuario> {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
       if (await this.usuarioService.findByEmail(createUserDto.email)) {
         throw new ForbiddenException(
@@ -36,7 +40,11 @@ export class UsersController {
       }
 
       const user = await this.usuarioService.add(createUserDto);
-      return user;
+      const login = await this.authService.login({
+        email: user.email,
+        id: user.id,
+      });
+      return { user, access_token: login.access_token };
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -54,7 +62,7 @@ export class UsersController {
   async findByPublicId(@Param() params, @Query() query) {
     const { public_id } = params;
     const { relations } = query;
-    let options = {};
+    const options = {};
 
     if (relations) Object.assign(options, { relations: relations.split(';') });
     return this.usuarioService.findByPublicId(public_id, options);
