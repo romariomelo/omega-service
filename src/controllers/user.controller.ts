@@ -75,9 +75,9 @@ export class UsersController {
   @ApiQuery({
     required: false,
     name: 'relations',
-    description:
-      'Retorna a requisição com as relações especificadas, separadas por ponto e virgula (;)',
-    example: 'propostas',
+    description: 'Retorna a requisição com as relações especificadas',
+    enum: ['propostas'],
+    isArray: true,
   })
   @ApiParam({
     format: 'uuid',
@@ -90,7 +90,7 @@ export class UsersController {
     const { relations } = query;
     const options = {};
 
-    if (relations) Object.assign(options, { relations: relations.split(';') });
+    if (relations) Object.assign(options, { relations });
     return this.usuarioService.findByPublicId(public_id, options);
   }
 
