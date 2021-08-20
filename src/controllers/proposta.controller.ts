@@ -46,6 +46,13 @@ export class PropostaController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: ResponsePropostaDto })
+  @Get(':public_id')
+  async findByPublicId(@Param('public_id') public_id) {
+    return this.propostasService.findByPublicId(public_id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Post()
   async create(
     @Body() createPropostaDto: CreatePropostaDto,
