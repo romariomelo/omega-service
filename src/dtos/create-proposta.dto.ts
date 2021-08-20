@@ -1,16 +1,18 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
   IsArray,
   IsBoolean,
   IsDate,
   IsIn,
   IsNotEmpty,
-  IsNumber,
   IsString,
 } from 'class-validator';
 import { Carga } from 'src/entities/carga.entity';
 import { CreateCargaDto } from './create-carga.dto';
+
+const TAM_MIN_LISTA_CARGAS = 1; // Tamanho mínimo da lista de cargas
 
 export class CreatePropostaDto {
   @IsDate()
@@ -40,12 +42,11 @@ export class CreatePropostaDto {
 
   @IsNotEmpty({ message: 'As cargas são obrigatórias' })
   @IsArray({ message: 'Deve ser uma lista com as cargas' })
+  @ArrayMinSize(TAM_MIN_LISTA_CARGAS, {
+    message: 'Deve ser informado pelo menos uma carga.',
+  })
   @ApiProperty({ type: CreateCargaDto, isArray: true })
   public cargas: Carga[];
-
-  @IsNumber({}, { message: 'Campo consumo_total deve ser um valor numérico' })
-  @ApiProperty()
-  public consumo_total: number;
 
   @IsBoolean({ message: 'Campo contratado deve ser um valor boolean' })
   @ApiProperty()

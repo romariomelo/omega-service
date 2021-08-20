@@ -43,7 +43,6 @@ export class PropostaService {
 
     proposta.data_inicio = createPropostaDto.data_inicio;
     proposta.data_fim = createPropostaDto.data_fim;
-    proposta.consumo_total = createPropostaDto.consumo_total;
     proposta.contratado = createPropostaDto.contratado;
     proposta.usuario = await this.usuarioService.findOne(id_usuario);
 
@@ -88,6 +87,11 @@ export class PropostaService {
 
   async update(proposta: Proposta, updatePropostaDto: UpdateProspostaDto) {
     return this.propostaRepository.update(proposta.id, updatePropostaDto);
+  }
+
+  async contrata(proposta: Proposta) {
+    proposta.contratado = true;
+    return this.propostaRepository.save(proposta);
   }
 
   private periodoEmHoras(data_inicio: Date, data_fim: Date) {

@@ -13,6 +13,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { CargaService } from 'src/services/carga.service';
 import { Carga } from 'src/entities/carga.entity';
 import { CargaController } from 'src/controllers/carga.controller';
+import { SubmercadoController } from 'src/controllers/submercado.controller';
+import { FonteEnergiaController } from 'src/controllers/fonteenergia.controller';
 
 @Module({
   imports: [
@@ -24,7 +26,12 @@ import { CargaController } from 'src/controllers/carga.controller';
       signOptions: { expiresIn: '1h' },
     }),
   ],
-  controllers: [PropostaController, CargaController],
+  controllers: [
+    PropostaController,
+    CargaController,
+    SubmercadoController,
+    FonteEnergiaController,
+  ],
   providers: [
     PropostaService,
     FonteEnergiaService,
