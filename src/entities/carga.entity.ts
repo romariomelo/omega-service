@@ -1,5 +1,5 @@
 import { BaseEntity } from 'shared/base-entity';
-import { Column, Entity, JoinColumn, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany } from 'typeorm';
 import { Proposta } from './proposta.entity';
 
 @Entity({ name: 'TB_CARGA' })

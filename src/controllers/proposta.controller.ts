@@ -4,7 +4,6 @@ import {
   Get,
   Post,
   UseGuards,
-  Request,
   Response,
   UseInterceptors,
   ClassSerializerInterceptor,
@@ -21,6 +20,7 @@ import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponsePropostaDto } from 'src/dtos/response-proposta.dto';
+import { UsuarioService } from 'src/services/usuario.service';
 
 @ApiBearerAuth('access-token')
 @ApiTags('propostas')
@@ -29,6 +29,7 @@ import { ResponsePropostaDto } from 'src/dtos/response-proposta.dto';
 export class PropostaController {
   constructor(
     private propostasService: PropostaService,
+    private usuarioService: UsuarioService,
     private jwtService: JwtService,
   ) {}
 
@@ -48,26 +49,13 @@ export class PropostaController {
   @Post()
   async create(
     @Body() createPropostaDto: CreatePropostaDto,
-    @Request() request,
-    @Response() response,
+    @Headers('authorization') auth,
   ): Promise<Proposta> {
-    const token = request.headers.authorization.split(' ')[1];
-    const payload = this.jwtService.decode(token, { json: true });
-    const id = String(payload.sub);
-    const date1 = new Date(createPropostaDto.data_inicio);
-    const date2 = new Date(createPropostaDto.data_fim);
-    const timeDiff = date2.getTime() - date1.getTime();
-    if (timeDiff <= 0) {
-      return response
-        .status(400)
-        .json({ message: 'Data final deve ser maior que a inicial' });
-    }
-    const proposta = await this.propostasService.create(
-      createPropostaDto,
-      id,
-      timeDiff,
+    const usuario = await this.usuarioService.getUsuarioLogado(
+      auth.replace('Bearer ', ''),
     );
-    return response.status(201).send(proposta);
+
+    return this.propostasService.create(createPropostaDto, usuario.id);
   }
 
   @UseGuards(JwtAuthGuard)
