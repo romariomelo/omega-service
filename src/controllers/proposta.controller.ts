@@ -19,7 +19,11 @@ import { CreatePropostaDto } from 'src/dtos/create-proposta.dto';
 import { Proposta } from 'src/entities/proposta.entity';
 import { JwtAuthGuard } from '../auth/shared/jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponsePropostaDto } from 'src/dtos/response-proposta.dto';
 
+@ApiBearerAuth('access-token')
+@ApiTags('propostas')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('proposta')
 export class PropostaController {
@@ -29,6 +33,7 @@ export class PropostaController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: ResponsePropostaDto, isArray: true })
   @Get()
   async findAll(@Headers() headers) {
     const { authorization } = headers;
@@ -67,6 +72,7 @@ export class PropostaController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':public_id')
+  @ApiParam({ name: 'public_id', description: 'Id público da proposta' })
   async remove(@Param() params, @Headers() headers, @Response() response) {
     const { authorization } = headers;
     const { public_id } = params;
@@ -90,6 +96,7 @@ export class PropostaController {
 
   @UseGuards(JwtAuthGuard)
   @Patch(':public_id')
+  @ApiParam({ name: 'public_id', description: 'Id público da proposta' })
   async update(@Param() params, @Headers() headers, @Response() response) {
     const { authorization } = headers;
     const { public_id } = params;

@@ -22,7 +22,17 @@ import { JwtAuthGuard } from 'src/auth/shared/jwt-auth.guard';
 import { UpdateUserDto } from 'src/dtos/update-user.dto';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/shared/auth.service';
+import {
+  ApiBearerAuth,
+  ApiParam,
+  ApiProperty,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ResponseUserDto } from 'src/dtos/response-usuario.dto';
 
+@ApiTags('usuario')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
 export class UsersController {
@@ -30,6 +40,7 @@ export class UsersController {
     private readonly usuarioService: UsuarioService,
     private authService: AuthService,
   ) {}
+
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
     try {
@@ -50,14 +61,29 @@ export class UsersController {
     }
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: ResponseUserDto, isArray: true, status: 200 })
   @Get()
   async find(): Promise<Usuario[]> {
     const usuarios = this.usuarioService.findAll();
     return usuarios;
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
+  @ApiQuery({
+    required: false,
+    name: 'relations',
+    description:
+      'Retorna a requisição com as relações especificadas, separadas por ponto e virgula (;)',
+    example: 'propostas',
+  })
+  @ApiParam({
+    format: 'uuid',
+    name: 'public_id',
+    description: 'Id público do usuário',
+  })
   @Get(':public_id')
   async findByPublicId(@Param() params, @Query() query) {
     const { public_id } = params;
@@ -69,12 +95,17 @@ export class UsersController {
   }
 
   @Get(':access_token/verify')
+  @ApiParam({
+    name: 'access_token',
+    description: 'Token de acesso do usuário',
+  })
   async verifyToken(@Param() param) {
     const { access_token } = param;
 
     return this.usuarioService.getUsuarioLogado(access_token);
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Put()
   async update(
